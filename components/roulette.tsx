@@ -27,6 +27,7 @@ export function Roulette() {
   const [activeTab, setActiveTab] = useState("wheel")
   const [winner, setWinner] = useState<Prize | null>(null)
   const [prizes, setPrizes] = useState<Prize[]>([])
+  const [isTelegram, setIsTelegram] = useState(false)
 
   useEffect(() => {
     // Debug: log Telegram WebApp context
@@ -103,6 +104,17 @@ export function Roulette() {
     }
 
     fetchData()
+  }, [])
+
+  useEffect(() => {
+    if (
+      typeof window !== "undefined" &&
+      window.Telegram &&
+      window.Telegram.WebApp &&
+      window.Telegram.WebApp.initDataUnsafe?.user
+    ) {
+      setIsTelegram(true)
+    }
   }, [])
 
   // Fetch free spins from backend (admin only)
@@ -184,7 +196,7 @@ export function Roulette() {
   // Calculate if the spin button should be disabled
   const canSpin = user.freeSpinsAvailable > 0 || user.balance >= 0.1;
 
-  if (!window.Telegram || !window.Telegram.WebApp || !window.Telegram.WebApp.initDataUnsafe?.user) {
+  if (!isTelegram) {
     return <div>Please open this app from Telegram.</div>;
   }
 
