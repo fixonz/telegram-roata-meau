@@ -58,57 +58,75 @@ export function Roulette() {
   }, []);
 
   useEffect(() => {
-    // Wait a tick for Telegram to inject the object
-    const timer = setTimeout(() => {
-      if (
-        typeof window !== "undefined" &&
-        window.Telegram &&
-        window.Telegram.WebApp &&
-        window.Telegram.WebApp.initDataUnsafe?.user
-      ) {
-        const tgUser = window.Telegram.WebApp.initDataUnsafe.user;
-        console.log("[Roulette] Telegram context detected:", tgUser);
-        setUser((prevUser) => ({
-          ...prevUser,
-          id: tgUser.id.toString(),
-          username: tgUser.username || `user${tgUser.id}`,
-        }));
-        setTelegramUser({
-          id: tgUser.id.toString(),
-          username: tgUser.username || `user${tgUser.id}`,
-        });
-        setTelegramLinked(true);
-        setIsTelegram(true);
-        setUsedFallback(false);
+    const initTelegram = () => {
+      // @ts-ignore
+      if (typeof window !== "undefined" && window.Telegram && window.Telegram.WebApp) {
+        // @ts-ignore
+        const tg = window.Telegram.WebApp;
+        
+        // Ensure the WebApp is ready and expanded
+        try {
+          tg.ready(); 
+          tg.expand(); 
+          console.log("[Roulette] Telegram WebApp ready() and expand() called.");
+        } catch (e) {
+          console.error("[Roulette] Error calling tg.ready() or tg.expand():", e);
+        }
+
+        const tgUser = tg.initDataUnsafe?.user;
+
+        if (tgUser && tgUser.id) { // Crucial check for tgUser.id
+          console.log("[Roulette] Telegram context DETECTED with valid user:", tgUser);
+          const currentUserId = tgUser.id.toString();
+          const currentUsername = tgUser.username || `user${tgUser.id}`;
+
+          setUser(prevUser => ({
+            ...prevUser,
+            id: currentUserId,
+            username: currentUsername,
+          }));
+          setTelegramUser({
+            id: currentUserId,
+            username: currentUsername,
+          });
+          setTelegramLinked(true);
+          setIsTelegram(true);
+          setUsedFallback(false);
+        } else {
+          console.error("[Roulette] Telegram context detected, but tgUser.id is missing or invalid.", tgUser);
+          // Fallback if user data is incomplete or missing
+          setUser(prevUser => ({ ...prevUser, id: "123456789", username: "testuser" }));
+          setTelegramUser({ id: "123456789", username: "testuser" });
+          setTelegramLinked(true);
+          setIsTelegram(true); // Allow app to render but with fallback data
+          setUsedFallback(true);
+        }
       } else {
-        // Fallback for local/dev/unsupported clients
         console.log("[Roulette] Telegram context NOT detected, using fallback.");
-        setUser((prevUser) => ({
-          ...prevUser,
-          id: "123456789",
-          username: "testuser",
-        }));
-        setTelegramUser({
-          id: "123456789",
-          username: "testuser",
-        });
+        // Fallback for local/dev/unsupported clients
+        setUser(prevUser => ({ ...prevUser, id: "123456789", username: "testuser" }));
+        setTelegramUser({ id: "123456789", username: "testuser" });
         setTelegramLinked(true);
-        setIsTelegram(true); // allow app to render
+        setIsTelegram(true); // Allow app to render but with fallback data
         setUsedFallback(true);
       }
-    }, 200); // 200ms delay
-    return () => clearTimeout(timer);
-  }, []);
+    };
 
+    // Attempt to initialize with a small delay to allow Telegram to inject its objects
+    const timer = setTimeout(initTelegram, 250); // Increased delay slightly
+
+    return () => clearTimeout(timer); // Cleanup timer on component unmount
+  }, []); // Empty dependency array means this runs once on mount
+
+  // This useEffect is for debugging the final user state after context detection
   useEffect(() => {
-    // Debug: log Telegram WebApp context and user state
-    if (typeof window !== "undefined" && window.Telegram && window.Telegram.WebApp) {
-      console.log("Telegram WebApp context:", window.Telegram.WebApp.initDataUnsafe);
-    } else {
-      console.log("Not in Telegram WebApp context");
+    console.log("[Roulette Debug] Final user state - id:", user.id, "username:", user.username, "isTelegram:", isTelegram, "usedFallback:", usedFallback);
+    // @ts-ignore
+    if(typeof window !== "undefined" && window.Telegram && window.Telegram.WebApp){
+        // @ts-ignore
+        console.log("[Roulette Debug] window.Telegram.WebApp.initDataUnsafe?.user:", window.Telegram.WebApp.initDataUnsafe?.user);
     }
-    console.log("[Roulette Debug] user.id:", user.id, "username:", user.username);
-  }, [user.id, user.username]);
+  }, [user.id, user.username, isTelegram, usedFallback]);
 
   // Fetch free spins from backend (admin only, skip for fallback test user)
   const fetchFreeSpins = async (userId: string) => {
