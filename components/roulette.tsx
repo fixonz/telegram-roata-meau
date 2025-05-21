@@ -11,6 +11,13 @@ import { PrizeLegend } from "@/components/prize-legend"
 import { RulesSection } from "@/components/rules-section"
 import { WalletSection } from "@/components/wallet-section"
 
+// Add this at the top of the file to fix linter errors for window.Telegram
+declare global {
+  interface Window {
+    Telegram?: any;
+  }
+}
+
 export function Roulette() {
   const [telegramLinked, setTelegramLinked] = useState(false)
   const [telegramUser, setTelegramUser] = useState<{ id?: string; username?: string }>({})
@@ -41,70 +48,39 @@ export function Roulette() {
   }, []);
 
   useEffect(() => {
-    // Check if running in Telegram WebApp
-    // @ts-ignore
-    if (typeof window !== "undefined" && window.Telegram && window.Telegram.WebApp) {
-      setTelegramLinked(true)
-      // @ts-ignore
-      window.Telegram.WebApp.expand()
-      // @ts-ignore
-      window.Telegram.WebApp.ready()
-      // @ts-ignore
-      window.Telegram.WebApp.enableClosingConfirmation()
-      // @ts-ignore
-      const tgUser = window.Telegram.WebApp.initDataUnsafe?.user
-      if (tgUser) {
-        setTelegramUser({
-          id: tgUser.id.toString(),
-          username: tgUser.username || `user${tgUser.id}`,
-        })
-        setUser((prevUser) => ({
-          ...prevUser,
-          id: tgUser.id.toString(),
-          username: tgUser.username || `user${tgUser.id}`,
-        }))
-        return
-      }
+    if (
+      typeof window !== "undefined" &&
+      window.Telegram &&
+      window.Telegram.WebApp &&
+      window.Telegram.WebApp.initDataUnsafe?.user
+    ) {
+      const tgUser = window.Telegram.WebApp.initDataUnsafe.user;
+      console.log("[Roulette] Using Telegram user context:", tgUser);
+      setUser((prevUser) => ({
+        ...prevUser,
+        id: tgUser.id.toString(),
+        username: tgUser.username || `user${tgUser.id}`,
+      }));
+      setTelegramUser({
+        id: tgUser.id.toString(),
+        username: tgUser.username || `user${tgUser.id}`,
+      });
+      setTelegramLinked(true);
+      return;
     }
-    // Fallback for local dev (not in Telegram)
+    // Fallback for local dev only
+    console.log("[Roulette] Using fallback test user context");
     setUser((prevUser) => ({
       ...prevUser,
-      id: "123456789", // Replace with a test Telegram ID
+      id: "123456789",
       username: "testuser",
-    }))
+    }));
     setTelegramUser({
       id: "123456789",
       username: "testuser",
-    })
-    setTelegramLinked(true)
-
-    // In a real app, fetch prizes and user data from the server
-    const fetchData = async () => {
-      try {
-        // For now, we'll just set some default prizes with text instead of money values
-        const defaultPrizes = [
-          { id: 1, name: "JACKPOT", value: "Grand Prize", color: "#9C27B0", icon: "trophy", probability: 0.01 },
-          { id: 2, name: "GOLD", value: "Gold Prize", color: "#E91E63", icon: "gift", probability: 0.02 },
-          { id: 3, name: "SILVER", value: "Silver Prize", color: "#FF5722", icon: "gift", probability: 0.03 },
-          { id: 4, name: "BRONZE", value: "Bronze Prize", color: "#FF9800", icon: "zap", probability: 0.05 },
-          { id: 5, name: "RARE", value: "Rare Item", color: "#FFEB3B", icon: "sparkles", probability: 0.07 },
-          { id: 6, name: "COMMON", value: "Common Item", color: "#4CAF50", icon: "sparkles", probability: 0.1 },
-          { id: 7, name: "BASIC", value: "Basic Item", color: "#2196F3", icon: "gift", probability: 0.12 },
-          { id: 8, name: "SMALL", value: "Small Prize", color: "#3F51B5", icon: "zap", probability: 0.15 },
-          { id: 9, name: "BONUS", value: "Bonus Spin", color: "#673AB7", icon: "gift", probability: 0.05 },
-          { id: 10, name: "FREE SPIN", value: "Free Spin", color: "#009688", icon: "zap", probability: 0.05 },
-          { id: 11, name: "MISS", value: "No Prize", color: "#F44336", icon: "x", probability: 0.15 },
-          { id: 12, name: "MISS", value: "No Prize", color: "#795548", icon: "x", probability: 0.2 },
-        ]
-        setPrizes(defaultPrizes)
-      } catch (error) {
-        console.error("Failed to fetch data:", error)
-        setPrizes([])
-      }
-    }
-
-    fetchData()
-  }, [])
+    });
+    setTelegramLinked(true);
+  }, []);
 
   useEffect(() => {
     if (
