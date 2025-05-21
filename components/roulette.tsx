@@ -38,6 +38,26 @@ export function Roulette() {
   const [usedFallback, setUsedFallback] = useState(false)
 
   useEffect(() => {
+    // Set default prizes on mount, never clear
+    const defaultPrizes = [
+      { id: 1, name: "JACKPOT", value: "Grand Prize", color: "#9C27B0", icon: "trophy", probability: 0.01 },
+      { id: 2, name: "GOLD", value: "Gold Prize", color: "#E91E63", icon: "gift", probability: 0.02 },
+      { id: 3, name: "SILVER", value: "Silver Prize", color: "#FF5722", icon: "gift", probability: 0.03 },
+      { id: 4, name: "BRONZE", value: "Bronze Prize", color: "#FF9800", icon: "zap", probability: 0.05 },
+      { id: 5, name: "RARE", value: "Rare Item", color: "#FFEB3B", icon: "sparkles", probability: 0.07 },
+      { id: 6, name: "COMMON", value: "Common Item", color: "#4CAF50", icon: "sparkles", probability: 0.1 },
+      { id: 7, name: "BASIC", value: "Basic Item", color: "#2196F3", icon: "gift", probability: 0.12 },
+      { id: 8, name: "SMALL", value: "Small Prize", color: "#3F51B5", icon: "zap", probability: 0.15 },
+      { id: 9, name: "BONUS", value: "Bonus Spin", color: "#673AB7", icon: "gift", probability: 0.05 },
+      { id: 10, name: "FREE SPIN", value: "Free Spin", color: "#009688", icon: "zap", probability: 0.05 },
+      { id: 11, name: "MISS", value: "No Prize", color: "#F44336", icon: "x", probability: 0.15 },
+      { id: 12, name: "MISS", value: "No Prize", color: "#795548", icon: "x", probability: 0.2 },
+    ];
+    setPrizes(defaultPrizes);
+    console.log("[Roulette] Prizes set:", defaultPrizes);
+  }, []);
+
+  useEffect(() => {
     // Wait a tick for Telegram to inject the object
     const timer = setTimeout(() => {
       if (
@@ -47,7 +67,7 @@ export function Roulette() {
         window.Telegram.WebApp.initDataUnsafe?.user
       ) {
         const tgUser = window.Telegram.WebApp.initDataUnsafe.user;
-        console.log("[Roulette] Using Telegram user context:", tgUser);
+        console.log("[Roulette] Telegram context detected:", tgUser);
         setUser((prevUser) => ({
           ...prevUser,
           id: tgUser.id.toString(),
@@ -62,7 +82,7 @@ export function Roulette() {
         setUsedFallback(false);
       } else {
         // Fallback for local/dev/unsupported clients
-        console.log("[Roulette] Using fallback test user context");
+        console.log("[Roulette] Telegram context NOT detected, using fallback.");
         setUser((prevUser) => ({
           ...prevUser,
           id: "123456789",
@@ -81,19 +101,18 @@ export function Roulette() {
   }, []);
 
   useEffect(() => {
-    // Debug: log Telegram WebApp context
-    // @ts-ignore
+    // Debug: log Telegram WebApp context and user state
     if (typeof window !== "undefined" && window.Telegram && window.Telegram.WebApp) {
-      // @ts-ignore
       console.log("Telegram WebApp context:", window.Telegram.WebApp.initDataUnsafe);
     } else {
       console.log("Not in Telegram WebApp context");
     }
-  }, []);
+    console.log("[Roulette Debug] user.id:", user.id, "username:", user.username);
+  }, [user.id, user.username]);
 
-  // Fetch free spins from backend (admin only)
+  // Fetch free spins from backend (admin only, skip for fallback test user)
   const fetchFreeSpins = async (userId: string) => {
-    if (!userId) return;
+    if (!userId || userId === "123456789") return;
     try {
       const res = await fetch(`/api/wallet/free-spins?userId=${userId}`);
       if (!res.ok) throw new Error("Failed to fetch free spins");
@@ -105,7 +124,7 @@ export function Roulette() {
   };
 
   useEffect(() => {
-    if (user.id) fetchFreeSpins(user.id);
+    if (user.id && user.id !== "123456789") fetchFreeSpins(user.id);
   }, [user.id]);
 
   // Handle spin result
@@ -176,6 +195,8 @@ export function Roulette() {
   if (!isTelegram) {
     return <div>Please open this app from Telegram.</div>;
   }
+
+  console.log("[Roulette Render] user.id:", user.id, "username:", user.username);
 
   // Render the component
   return (
