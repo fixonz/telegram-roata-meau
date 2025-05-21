@@ -35,6 +35,7 @@ export function Roulette() {
   const [winner, setWinner] = useState<Prize | null>(null)
   const [prizes, setPrizes] = useState<Prize[]>([])
   const [isTelegram, setIsTelegram] = useState<boolean | null>(null)
+  const [usedFallback, setUsedFallback] = useState(false)
 
   useEffect(() => {
     // Wait a tick for Telegram to inject the object
@@ -45,12 +46,37 @@ export function Roulette() {
         window.Telegram.WebApp &&
         window.Telegram.WebApp.initDataUnsafe?.user
       ) {
+        const tgUser = window.Telegram.WebApp.initDataUnsafe.user;
+        console.log("[Roulette] Using Telegram user context:", tgUser);
+        setUser((prevUser) => ({
+          ...prevUser,
+          id: tgUser.id.toString(),
+          username: tgUser.username || `user${tgUser.id}`,
+        }));
+        setTelegramUser({
+          id: tgUser.id.toString(),
+          username: tgUser.username || `user${tgUser.id}`,
+        });
+        setTelegramLinked(true);
         setIsTelegram(true);
+        setUsedFallback(false);
       } else {
-        setIsTelegram(false);
+        // Fallback for local/dev/unsupported clients
+        console.log("[Roulette] Using fallback test user context");
+        setUser((prevUser) => ({
+          ...prevUser,
+          id: "123456789",
+          username: "testuser",
+        }));
+        setTelegramUser({
+          id: "123456789",
+          username: "testuser",
+        });
+        setTelegramLinked(true);
+        setIsTelegram(true); // allow app to render
+        setUsedFallback(true);
       }
-    }, 100); // 100ms delay
-
+    }, 200); // 200ms delay
     return () => clearTimeout(timer);
   }, []);
 
@@ -63,41 +89,6 @@ export function Roulette() {
     } else {
       console.log("Not in Telegram WebApp context");
     }
-  }, []);
-
-  useEffect(() => {
-    if (
-      typeof window !== "undefined" &&
-      window.Telegram &&
-      window.Telegram.WebApp &&
-      window.Telegram.WebApp.initDataUnsafe?.user
-    ) {
-      const tgUser = window.Telegram.WebApp.initDataUnsafe.user;
-      console.log("[Roulette] Using Telegram user context:", tgUser);
-      setUser((prevUser) => ({
-        ...prevUser,
-        id: tgUser.id.toString(),
-        username: tgUser.username || `user${tgUser.id}`,
-      }));
-      setTelegramUser({
-        id: tgUser.id.toString(),
-        username: tgUser.username || `user${tgUser.id}`,
-      });
-      setTelegramLinked(true);
-      return;
-    }
-    // Fallback for local dev only
-    console.log("[Roulette] Using fallback test user context");
-    setUser((prevUser) => ({
-      ...prevUser,
-      id: "123456789",
-      username: "testuser",
-    }));
-    setTelegramUser({
-      id: "123456789",
-      username: "testuser",
-    });
-    setTelegramLinked(true);
   }, []);
 
   // Fetch free spins from backend (admin only)
@@ -189,6 +180,12 @@ export function Roulette() {
   // Render the component
   return (
     <div className="flex flex-col items-center w-full max-w-md">
+      {usedFallback && (
+        <div style={{ color: 'orange', margin: '1em 0', textAlign: 'center' }}>
+          <b>Warning:</b> Telegram user context not detected.<br />
+          You are using a test account. Some features may not work as expected.
+        </div>
+      )}
       <Card className="w-full mb-4 bg-gray-900/50 border-gray-800">
         <CardContent className="p-4">
           <div className="flex justify-between items-center">
