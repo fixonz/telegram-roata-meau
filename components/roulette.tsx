@@ -58,10 +58,17 @@ export function Roulette() {
   }, []);
 
   useEffect(() => {
-    console.log("[Roulette] Attempting to initialize Telegram context...");
+    console.log("[Roulette] Initializing Telegram context sequence...");
+    let attempts = 0;
+    const maxAttempts = 25; // Poll for 5 seconds (25 * 200ms)
+    let pollInterval: NodeJS.Timeout | null = null;
+
     const initTelegram = () => {
+      console.log(`[Roulette] Attempt #${attempts + 1} to find window.Telegram.WebApp.`);
       // @ts-ignore
       if (typeof window !== "undefined" && window.Telegram && window.Telegram.WebApp) {
+        if (pollInterval) clearInterval(pollInterval);
+        console.log("[Roulette] window.Telegram.WebApp DETECTED.");
         // @ts-ignore
         const tg = window.Telegram.WebApp;
         try {
@@ -75,13 +82,13 @@ export function Roulette() {
         console.log("[Roulette] Raw tg.initDataUnsafe.user:", tgUser);
 
         if (tgUser && tgUser.id) {
-          console.log(`[Roulette] Telegram context DETECTED. User ID: ${tgUser.id}, Username: ${tgUser.username}`);
+          console.log(`[Roulette] Telegram context successfully processed. User ID: ${tgUser.id}, Username: ${tgUser.username}`);
           const currentUserId = tgUser.id.toString();
           const currentUsername = tgUser.username || `user${tgUser.id}`;
           setUser({
             id: currentUserId,
             username: currentUsername,
-            balance: 0, // Initialize other fields as needed or fetch them
+            balance: 0,
             totalSpins: 0,
             paidSpins: 0,
             freeSpinsAvailable: 0,
@@ -103,17 +110,38 @@ export function Roulette() {
           console.log("[Roulette] State SET with FALLBACK user due to missing tgUser.id.");
         }
       } else {
-        console.log("[Roulette] Telegram context (window.Telegram.WebApp) NOT DETECTED. Using fallback.");
-        setUser(prev => ({ ...prev, id: "123456789", username: "testuser" }));
-        setTelegramUser({ id: "123456789", username: "testuser" });
-        setTelegramLinked(true);
-        setIsTelegram(true);
-        setUsedFallback(true);
-        console.log("[Roulette] State SET with FALLBACK user due to no Telegram context.");
+        attempts++;
+        if (attempts >= maxAttempts) {
+          if (pollInterval) clearInterval(pollInterval);
+          console.log(`[Roulette] window.Telegram.WebApp NOT DETECTED after ${maxAttempts} attempts. Using fallback.`);
+          setUser(prev => ({ ...prev, id: "123456789", username: "testuser" }));
+          setTelegramUser({ id: "123456789", username: "testuser" });
+          setTelegramLinked(true);
+          setIsTelegram(true);
+          setUsedFallback(true);
+          console.log("[Roulette] State SET with FALLBACK user due to timeout in detection.");
+        } else {
+          // Will be logged at the start of the next initTelegram call via polling
+        }
       }
     };
-    const timer = setTimeout(initTelegram, 300);
-    return () => clearTimeout(timer);
+
+    // Try immediately
+    initTelegram();
+
+    // If not found immediately, start polling
+    // @ts-ignore
+    if (!(typeof window !== "undefined" && window.Telegram && window.Telegram.WebApp) && attempts < maxAttempts) {
+      console.log("[Roulette] window.Telegram.WebApp not found immediately. Starting polling...");
+      pollInterval = setInterval(initTelegram, 200);
+    }
+
+    return () => {
+      if (pollInterval) {
+        clearInterval(pollInterval);
+        console.log("[Roulette] Cleaned up polling interval.");
+      }
+    };
   }, []);
 
   useEffect(() => {
