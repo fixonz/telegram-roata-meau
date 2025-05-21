@@ -95,6 +95,12 @@ importers:
       '@radix-ui/react-tooltip':
         specifier: 1.1.6
         version: 1.1.6(@types/react-dom@19.1.5(@types/react@19.1.5))(@types/react@19.1.5)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
+      '@telegram-apps/sdk':
+        specifier: ^3.10.0
+        version: 3.10.0(typescript@5.8.3)
+      '@telegram-apps/sdk-react':
+        specifier: ^3.3.0
+        version: 3.3.0(@types/react@19.1.5)(react@19.1.0)(typescript@5.8.3)
       autoprefixer:
         specifier: ^10.4.20
         version: 10.4.21(postcss@8.5.3)
@@ -1151,6 +1157,48 @@ packages:
   '@swc/helpers@0.5.15':
     resolution: {integrity: sha512-JQ5TuMi45Owi4/BIMAJBoSQoOJu12oOk/gADqlcUL9JEdHB8vyjUSsxqeNXnmXHjYKMi2WcYtezGEEhqUI/E2g==}
 
+  '@telegram-apps/bridge@1.9.2':
+    resolution: {integrity: sha512-SJLcNWLXhbbZr9MiqFH/g2ceuitSJKMxUIZysK4zUNyTUNuonrQG80Q/yrO+XiNbKUj8WdDNM86NBARhuyyinQ==}
+
+  '@telegram-apps/bridge@2.8.2':
+    resolution: {integrity: sha512-DpdvK1FUSklQFRaqV84rzhxUU/Pe6tVW497CtUfUZ87wenf/NY8Tvd5GONTJpAVb+H7wGcEcolielLOq1dSV5g==}
+
+  '@telegram-apps/navigation@1.0.13':
+    resolution: {integrity: sha512-TsUueB5LQp77GQHoMa93nq26Uw7GJjrFCPbyseMVU7aBBxAc+8CV2IYytRwcVp5sv/q7ThK5X4JaKn2V1yBHDQ==}
+
+  '@telegram-apps/sdk-react@3.3.0':
+    resolution: {integrity: sha512-OeHfCR67/QgiTewwHN0Mlwf9ww2plgItrh2LWTjUe0JqsY0Zl8JgK5BNSjsR2qQasu/ivAdJTrwu/QiygGk3Ig==}
+    peerDependencies:
+      '@types/react': ^17.0.0 || ^18.0.0 || ^19.0.0
+      react: ^17.0.0 || ^18.0.0 || ^19.0.0
+    peerDependenciesMeta:
+      '@types/react':
+        optional: true
+
+  '@telegram-apps/sdk@3.10.0':
+    resolution: {integrity: sha512-LD7mk0STzFGh2Qws2cyTAudLaAb4cT8nUJDBCdaBitLjmndru13UZHjsU9dzZCD9jpeJmqaQjhHNjtRHMithTg==}
+
+  '@telegram-apps/signals@1.1.1':
+    resolution: {integrity: sha512-vz37r8lemGpPzDiBRfqpXYBynzmy3SFnY6zfHsTZABTYYt0b0WQZyU5mFDqqqugGhka78Gy11xmr9csgy4YgGA==}
+
+  '@telegram-apps/toolkit@1.1.1':
+    resolution: {integrity: sha512-+vhKx6ngfvjyTE6Xagl3z1TPVbfx5s7xAkcYzCdHYUo6T60jLIqLgyZMcI1UPoIAMuMu1pHoO+p8QNCj/+tFmw==}
+
+  '@telegram-apps/toolkit@2.1.2':
+    resolution: {integrity: sha512-iAPjn7RNVEm4o+LPJg1mYv7eDOnCatVEvep7JT74awTt3tn8pVpTYeUbDIFBuOF2BRSIzUgPUYQgVhQcDFTpUg==}
+
+  '@telegram-apps/transformers@1.2.2':
+    resolution: {integrity: sha512-vvMwXckd1D7Ozc0h66PSUwF5QLrRV9HlGJFFeBuUex8QEk5mSPtsJkLiqB8aBbwuFDa91+TUSM/CxqPZO/e9YQ==}
+
+  '@telegram-apps/transformers@2.2.3':
+    resolution: {integrity: sha512-CFQqs7iXw6yuUMBzU1/W/EGW6RlrO0ZViJGFa0ButyHVxOnmM+d5vJmlAiqBFtnUutK9Q2GfbHZoGLW8qSs5YQ==}
+
+  '@telegram-apps/types@1.2.1':
+    resolution: {integrity: sha512-so4HLh7clur0YyMthi9KVIgWoGpZdXlFOuQjk3+Q5NAvJZ11nAheBSwPlGw/Ko92+zwvrSBE/lQyN2+p17RP+w==}
+
+  '@telegram-apps/types@2.0.0':
+    resolution: {integrity: sha512-yF499FJK82a2IDNDAQdrmVH3sgFZl/QFNdVZKgWpgtunIVJ1fres5wi9+4aUBRVIdQwZOZZqB/AOvYYuYXsq3Q==}
+
   '@tootallnate/once@1.1.2':
     resolution: {integrity: sha512-RbzJvlNzmRq5c3O09UipeuXno4tA1FE6ikOjxZK0tuxVv3412l64l5t1W5pj4+rJq9vpkm/kwiR07aZXnsKPxw==}
     engines: {node: '>= 6'}
@@ -1273,6 +1321,9 @@ packages:
 
   bech32@2.0.0:
     resolution: {integrity: sha512-LcknSilhIGatDAsY1ak2I8VtGaHNhgMSYVxFrGLXv+xLHytaKZKcaUJJUE7qmBr7h33o5YQwP55pMI0xmkpJwg==}
+
+  better-promises@0.4.1:
+    resolution: {integrity: sha512-cDW7eMvhvCoWzSih5o/OxsAgTUfP05yGMq77xNZUTmcZoNU9vEeFZJ+yJJi4lnocvxFrVFKsG0Yxt7ZnuYJEig==}
 
   binary-extensions@2.3.0:
     resolution: {integrity: sha512-Ceh+7ox5qe7LJuLHoY0feh3pHuUDHAcRUeyL2VYghZwfpkNIy/+8Ocg0a3UuSoYzavmylwuLWQOf3hl0jjMMIw==}
@@ -1545,6 +1596,9 @@ packages:
 
   err-code@2.0.3:
     resolution: {integrity: sha512-2bmlRpNKBxT/CRmPOlyISQpNj+qSeYvcym/uT0Jx2bMOlKLtSy1ZmLuVxSEKKyor/N5yhvp/ZiG1oE3DEYMSFA==}
+
+  error-kid@0.0.7:
+    resolution: {integrity: sha512-8mFs7ZaDWlBFgjOy4lHLMCe2+KZfZXGx5GOgh2VQ/M1CCIvSWzbl2OMl+5fdZgrgoUfhTeF+NPhmqfEvUhN8yw==}
 
   escalade@3.2.0:
     resolution: {integrity: sha512-WUj2qlxaQtO4g6Pq5c29GTcWGDyd8itL8zTlipgECz3JesAiiOKotd8JU6otB3PACgG6xkJUyVhboMS+bje/jA==}
@@ -1835,6 +1889,9 @@ packages:
   minizlib@2.1.2:
     resolution: {integrity: sha512-bAxsR8BVfj60DWXHE3u30oHzfl4G7khkSuPW+qvpd7jFRHm7dLxOjUk1EHACJ/hxLY8phGJ0YhYHZo7jil7Qdg==}
     engines: {node: '>= 8'}
+
+  mitt@3.0.1:
+    resolution: {integrity: sha512-vKivATfr97l2/QBCYAkXYDbrIWPM2IIKEl7YPhjCvKlG3kE2gm+uBo6nEXK3M5/Ffh/FLpKExzOQ3JJoJGFKBw==}
 
   mkdirp-classic@0.5.3:
     resolution: {integrity: sha512-gKLcREMhtuZRwRAfqP3RFW+TK4JqApVBtOIftVgjuABpAtpxhPGaDcfvbhNvD0B8iD1oUr/txX35NjcaY6Ns/A==}
@@ -2424,6 +2481,22 @@ packages:
 
   valibot@0.37.0:
     resolution: {integrity: sha512-FQz52I8RXgFgOHym3XHYSREbNtkgSjF9prvMFH1nBsRyfL6SfCzoT1GuSDTlbsuPubM7/6Kbw0ZMQb8A+V+VsQ==}
+    peerDependencies:
+      typescript: '>=5'
+    peerDependenciesMeta:
+      typescript:
+        optional: true
+
+  valibot@1.0.0:
+    resolution: {integrity: sha512-1Hc0ihzWxBar6NGeZv7fPLY0QuxFMyxwYR2sF1Blu7Wq7EnremwY2W02tit2ij2VJT8HcSkHAQqmFfl77f73Yw==}
+    peerDependencies:
+      typescript: '>=5'
+    peerDependenciesMeta:
+      typescript:
+        optional: true
+
+  valibot@1.0.0-beta.14:
+    resolution: {integrity: sha512-tLyV2rE5QL6U29MFy3xt4AqMrn+/HErcp2ZThASnQvPMwfSozjV1uBGKIGiegtZIGjinJqn0SlBdannf18wENA==}
     peerDependencies:
       typescript: '>=5'
     peerDependenciesMeta:
@@ -3414,6 +3487,78 @@ snapshots:
     dependencies:
       tslib: 2.8.1
 
+  '@telegram-apps/bridge@1.9.2':
+    dependencies:
+      '@telegram-apps/signals': 1.1.1
+      '@telegram-apps/toolkit': 1.1.1
+      '@telegram-apps/transformers': 1.2.2
+      '@telegram-apps/types': 1.2.1
+
+  '@telegram-apps/bridge@2.8.2(typescript@5.8.3)':
+    dependencies:
+      '@telegram-apps/signals': 1.1.1
+      '@telegram-apps/toolkit': 2.1.2
+      '@telegram-apps/transformers': 2.2.3(typescript@5.8.3)
+      '@telegram-apps/types': 2.0.0
+      better-promises: 0.4.1
+      error-kid: 0.0.7
+      mitt: 3.0.1
+      valibot: 1.0.0(typescript@5.8.3)
+    transitivePeerDependencies:
+      - typescript
+
+  '@telegram-apps/navigation@1.0.13':
+    dependencies:
+      '@telegram-apps/bridge': 1.9.2
+      '@telegram-apps/signals': 1.1.1
+      '@telegram-apps/toolkit': 1.1.1
+
+  '@telegram-apps/sdk-react@3.3.0(@types/react@19.1.5)(react@19.1.0)(typescript@5.8.3)':
+    dependencies:
+      '@telegram-apps/sdk': 3.10.0(typescript@5.8.3)
+      react: 19.1.0
+    optionalDependencies:
+      '@types/react': 19.1.5
+    transitivePeerDependencies:
+      - typescript
+
+  '@telegram-apps/sdk@3.10.0(typescript@5.8.3)':
+    dependencies:
+      '@telegram-apps/bridge': 2.8.2(typescript@5.8.3)
+      '@telegram-apps/navigation': 1.0.13
+      '@telegram-apps/signals': 1.1.1
+      '@telegram-apps/toolkit': 2.1.2
+      '@telegram-apps/transformers': 2.2.3(typescript@5.8.3)
+      '@telegram-apps/types': 2.0.0
+      better-promises: 0.4.1
+      error-kid: 0.0.7
+      valibot: 1.0.0(typescript@5.8.3)
+    transitivePeerDependencies:
+      - typescript
+
+  '@telegram-apps/signals@1.1.1': {}
+
+  '@telegram-apps/toolkit@1.1.1': {}
+
+  '@telegram-apps/toolkit@2.1.2': {}
+
+  '@telegram-apps/transformers@1.2.2':
+    dependencies:
+      '@telegram-apps/toolkit': 1.1.1
+      '@telegram-apps/types': 1.2.1
+
+  '@telegram-apps/transformers@2.2.3(typescript@5.8.3)':
+    dependencies:
+      '@telegram-apps/toolkit': 2.1.2
+      '@telegram-apps/types': 2.0.0
+      valibot: 1.0.0-beta.14(typescript@5.8.3)
+    transitivePeerDependencies:
+      - typescript
+
+  '@telegram-apps/types@1.2.1': {}
+
+  '@telegram-apps/types@2.0.0': {}
+
   '@tootallnate/once@1.1.2':
     optional: true
 
@@ -3531,6 +3676,10 @@ snapshots:
   base64-js@1.5.1: {}
 
   bech32@2.0.0: {}
+
+  better-promises@0.4.1:
+    dependencies:
+      error-kid: 0.0.7
 
   binary-extensions@2.3.0: {}
 
@@ -3830,6 +3979,8 @@ snapshots:
 
   err-code@2.0.3:
     optional: true
+
+  error-kid@0.0.7: {}
 
   escalade@3.2.0: {}
 
@@ -4154,6 +4305,8 @@ snapshots:
     dependencies:
       minipass: 3.3.6
       yallist: 4.0.0
+
+  mitt@3.0.1: {}
 
   mkdirp-classic@0.5.3: {}
 
@@ -4792,6 +4945,14 @@ snapshots:
   util-deprecate@1.0.2: {}
 
   valibot@0.37.0(typescript@5.8.3):
+    optionalDependencies:
+      typescript: 5.8.3
+
+  valibot@1.0.0(typescript@5.8.3):
+    optionalDependencies:
+      typescript: 5.8.3
+
+  valibot@1.0.0-beta.14(typescript@5.8.3):
     optionalDependencies:
       typescript: 5.8.3
 

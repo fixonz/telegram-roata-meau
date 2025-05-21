@@ -1,6 +1,7 @@
 "use client"
 
 import { useState, useEffect } from "react"
+import Script from "next/script" 
 import { Card, CardContent } from "@/components/ui/card"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Badge } from "@/components/ui/badge"
@@ -59,8 +60,9 @@ export function Roulette() {
 
   useEffect(() => {
     console.log("[Roulette] Initializing Telegram context sequence...");
+    console.log("[Roulette] Attempting to load Telegram WebApp SDK via Next/Script.");
     let attempts = 0;
-    const maxAttempts = 25; // Poll for 5 seconds (25 * 200ms)
+    const maxAttempts = 50; // Poll for 10 seconds (50 * 200ms)
     let pollInterval: NodeJS.Timeout | null = null;
 
     const initTelegram = () => {
@@ -243,58 +245,61 @@ export function Roulette() {
 
   // Render the component
   return (
-    <div className="flex flex-col items-center w-full max-w-md">
-      {usedFallback && (
-        <div style={{ color: 'orange', margin: '1em 0', textAlign: 'center' }}>
-          <b>Warning:</b> Telegram user context not detected.<br />
-          You are using a test account. Some features may not work as expected.
-        </div>
-      )}
-      <Card className="w-full mb-4 bg-gray-900/50 border-gray-800">
-        <CardContent className="p-4">
-          <div className="flex justify-between items-center">
-            <div>
-              <p className="text-sm text-gray-200">Balance</p>
-              <p className="text-xl font-bold text-gray-200">{user.balance.toFixed(4)} LTC</p>
-            </div>
-            <div>
-              <p className="text-sm text-gray-200">Free Spins</p>
-              <p className="text-xl font-bold text-center text-gray-200">{user.freeSpinsAvailable}</p>
-            </div>
+    <>
+      <Script src="https://telegram.org/js/telegram-web-app.js" strategy="beforeInteractive" />
+      <div className="flex flex-col items-center w-full max-w-md">
+        {usedFallback && (
+          <div style={{ color: 'orange', margin: '1em 0', textAlign: 'center' }}>
+            <b>Warning:</b> Telegram user context not detected.<br />
+            You are using a test account. Some features may not work as expected.
           </div>
-        </CardContent>
-      </Card>
-      <Tabs defaultValue="wheel" className="w-full mt-4" onValueChange={setActiveTab}>
-        <TabsList className="grid grid-cols-3 mb-4">
-          <TabsTrigger value="wheel">Wheel</TabsTrigger>
-          <TabsTrigger value="wallet">Wallet</TabsTrigger>
-          <TabsTrigger value="rules">Rules</TabsTrigger>
-        </TabsList>
-        <TabsContent value="wheel" className="mt-0">
-          <div className="flex flex-col md:flex-row gap-4">
-            <div className="w-full md:w-2/3">
-              <FancyWheel
-                prizes={prizes}
-                onSpin={handleSpin}
-                disabled={!canSpin}
-                spinCost={0}
-                freeSpins={0}
-              />
+        )}
+        <Card className="w-full mb-4 bg-gray-900/50 border-gray-800">
+          <CardContent className="p-4">
+            <div className="flex justify-between items-center">
+              <div>
+                <p className="text-sm text-gray-200">Balance</p>
+                <p className="text-xl font-bold text-gray-200">{user.balance.toFixed(4)} LTC</p>
+              </div>
+              <div>
+                <p className="text-sm text-gray-200">Free Spins</p>
+                <p className="text-xl font-bold text-center text-gray-200">{user.freeSpinsAvailable}</p>
+              </div>
             </div>
-            <div className="w-full md:w-1/3 mt-4 md:mt-0">
-              <PrizeLegend prizes={prizes} />
+          </CardContent>
+        </Card>
+        <Tabs defaultValue="wheel" className="w-full mt-4" onValueChange={setActiveTab}>
+          <TabsList className="grid grid-cols-3 mb-4">
+            <TabsTrigger value="wheel">Wheel</TabsTrigger>
+            <TabsTrigger value="wallet">Wallet</TabsTrigger>
+            <TabsTrigger value="rules">Rules</TabsTrigger>
+          </TabsList>
+          <TabsContent value="wheel" className="mt-0">
+            <div className="flex flex-col md:flex-row gap-4">
+              <div className="w-full md:w-2/3">
+                <FancyWheel
+                  prizes={prizes}
+                  onSpin={handleSpin}
+                  disabled={!canSpin}
+                  spinCost={0}
+                  freeSpins={0}
+                />
+              </div>
+              <div className="w-full md:w-1/3 mt-4 md:mt-0">
+                <PrizeLegend prizes={prizes} />
+              </div>
             </div>
-          </div>
-        </TabsContent>
-        <TabsContent value="wallet">
-          <div className="flex flex-col items-center w-full">
-            <WalletSection userId={user.id} username={user.username} />
-          </div>
-        </TabsContent>
-        <TabsContent value="rules">
-          <RulesSection />
-        </TabsContent>
-      </Tabs>
-    </div>
+          </TabsContent>
+          <TabsContent value="wallet">
+            <div className="flex flex-col items-center w-full">
+              <WalletSection userId={user.id} username={user.username} />
+            </div>
+          </TabsContent>
+          <TabsContent value="rules">
+            <RulesSection />
+          </TabsContent>
+        </Tabs>
+      </div>
+    </>
   )
 }
