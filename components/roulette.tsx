@@ -184,6 +184,10 @@ export function Roulette() {
   // Calculate if the spin button should be disabled
   const canSpin = user.freeSpinsAvailable > 0 || user.balance >= 0.1;
 
+  if (!window.Telegram || !window.Telegram.WebApp || !window.Telegram.WebApp.initDataUnsafe?.user) {
+    return <div>Please open this app from Telegram.</div>;
+  }
+
   // Render the component
   return (
     <div className="flex flex-col items-center w-full max-w-md">
